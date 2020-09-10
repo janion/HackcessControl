@@ -14,6 +14,8 @@ class ClientList:
             self.client_ids.append(newClient)
             for callback in self.client_added_callbacks:
                 callback(newClient)
+            return True
+        return False
 
     def get_client_ids(self):
         return self.client_ids.copy()

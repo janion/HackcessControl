@@ -1,8 +1,7 @@
-import select
+import json
 from socket import *
 
 import smart_home.common.Constants as Constants
-import smart_home.common.NetworkUtilities as NetworkUtilities
 
 
 class NewDeviceAnnouncer:
@@ -21,8 +20,12 @@ class NewDeviceAnnouncer:
         cs = socket(AF_INET, SOCK_DGRAM)
         cs.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
         cs.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-        cs.sendto(str.encode(Constants.IP_FORMAT % gethostbyname(gethostname())), ('255.255.255.255', Constants.UDP_PORT_NUMBER))
+        cs.sendto(str.encode(self._create_json()), ('255.255.255.255', Constants.UDP_PORT_NUMBER))
         cs.close()
+
+    def _create_json(self):
+        data = {Constants.JSON_IP_ADDRESS: gethostbyname(gethostname()), Constants.JSON_CLIENT_NAME: "NAME"}
+        return json.dumps(data)
 
     def _await_server_response(self):
         try:
@@ -40,9 +43,11 @@ class NewDeviceAnnouncer:
             data = cl.recv(256).decode()
             cl.close()
 
-            ip = NetworkUtilities.extract_ip_address(data)
+            json_data = json.loads(data)
+            ip = json_data[Constants.JSON_IP_ADDRESS]
+            name = json_data[Constants.JSON_CLIENT_NAME]
             print('Server connected from', ip)
 
-            return ip
+            return ip, name
         except timeout:
             pass

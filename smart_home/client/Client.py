@@ -5,7 +5,7 @@ class Client:
 
     def start(self):
         announcer = NewDeviceAnnouncer()
-        server_ip = announcer.connect_to_server()
+        server_ip, client_name = announcer.connect_to_server()
 
         while True:
             # Do useful things
