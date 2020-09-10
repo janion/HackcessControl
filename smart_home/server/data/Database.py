@@ -19,10 +19,10 @@ class Database:
 
     def set_field_value(self, field_name, ip, value):
         field = self._get_field(field_name)
-        if field is None or field.has_permission(ip):
+        if field is None or not field.has_permission(ip):
             return False
 
-        self.data[field_name] = DataUpdate(value)
+        self.data[field] = DataUpdate(value)
         return True
 
     def get_field_value(self, field_name):

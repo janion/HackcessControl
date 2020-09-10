@@ -17,6 +17,13 @@ class ClientList:
             return True
         return False
 
+    def remove_client(self, ip):
+        existing_client = self._get_client_id(None, ip)
+        if existing_client is not None:
+            self.client_ids.remove(existing_client)
+            return True
+        return False
+
     def get_client_ids(self):
         return self.client_ids.copy()
 

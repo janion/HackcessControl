@@ -45,5 +45,6 @@ class NewDeviceReplier:
             s2.close()
 
     def _create_json(self, name):
-        data = {Constants.JSON_IP_ADDRESS: gethostbyname(gethostname()), Constants.JSON_CLIENT_NAME: name}
+        data = {Constants.JSON_IP_ADDRESS: gethostbyname(gethostname()),
+                Constants.JSON_CLIENT_NAME: name}
         return json.dumps(data)
