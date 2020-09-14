@@ -17,7 +17,7 @@ class Database:
 
         return True
 
-    def set_field_value(self, field_name, ip, value):
+    def set_field_value(self, field_name, value, ip):
         field = self._get_field(field_name)
         if field is None or not field.has_permission(ip):
             return False

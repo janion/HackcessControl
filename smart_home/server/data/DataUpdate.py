@@ -1,11 +1,12 @@
 import time
+import smart_home.common.Constants as Constants
 
 
 class DataUpdate:
 
     def __init__(self, value):
         self.value = value
-        self.time = time.localtime()
+        self.time = time.strftime(Constants.JSON_TIME_FORMAT)
 
     def get_value(self):
         return self.value
