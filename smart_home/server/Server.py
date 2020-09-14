@@ -31,6 +31,9 @@ class Server:
                 self.database.set_field_value(Constants.JSON_TIME, current_time, Constants.SERVER_ONLY_IP)
                 last_time = current_time
 
+            time.sleep(1)
+
+
 if __name__ == "__main__":
     server = Server()
     server.start()
