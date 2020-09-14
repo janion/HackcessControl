@@ -7,6 +7,8 @@
 - Display server database in simple webpage for debugging
 - Update client connection system to just have server constantly (every 60s) broadcast json with ip address?
 - Update client server poller to use asyncio rather than threads so that it can work on esp8266 modules
+- Reject connection based on name or IP, decide accordingly
+- Protect data upload based on name not IP
 
 ## Done:
 - Server to store timestamp of last data submission
