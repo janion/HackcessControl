@@ -4,6 +4,7 @@
 - Reject connection based on name or IP, decide accordingly
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
+- ESP8266 button pressed client
 
 ## Done:
 - Server to store timestamp of last data submission

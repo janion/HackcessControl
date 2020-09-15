@@ -7,7 +7,7 @@ import smart_home.common.Constants as Constants
 
 class EpochTimePollingClient(Client):
 
-    POLL_PERIOD = 2
+    POLL_PERIOD = 5
     FIELD_NAME = "client_time"
 
     def __init__(self, name="EpochTimePoller"):
@@ -32,6 +32,7 @@ class EpochTimePollingClient(Client):
                 self.last_remote_time = remote_time
 
             self.last_poll_time = int(time.time())
+        time.sleep(1)
 
 
 if __name__ == "__main__":

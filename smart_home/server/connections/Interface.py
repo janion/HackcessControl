@@ -1,6 +1,7 @@
 import socket
 import json
 from threading import Thread
+from time import sleep
 
 import smart_home.common.Constants as Constants
 
@@ -50,6 +51,7 @@ class Interface:
                         return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_UPDATE_STATUS,
                                        Constants.JSON_STATUS: Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL}
                         clientsocket.send(json.dumps(return_data).encode())
+                sleep(1)
         except Exception as exptn:
             print("Exception:", exptn)
             self.client_list.remove_client(addr[0])
