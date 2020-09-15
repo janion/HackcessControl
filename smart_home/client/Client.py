@@ -1,6 +1,3 @@
-import sys
-import time
-
 from smart_home.client.connections.NewDeviceAnnouncer import NewDeviceAnnouncer
 from smart_home.client.connections.ServerConnection import ServerConnection
 
@@ -29,8 +26,3 @@ class Client:
 
     def process(self, server_connection):
         raise NotImplementedError()
-
-
-if __name__ == "__main__":
-    client = Client()
-    client.start()

@@ -1,5 +1,10 @@
-import socket
-import json
+import sys
+if sys.implementation.name == "cpython":
+    import json
+    import socket
+elif sys.implementation.name == "micropython":
+    import ujson as json
+    import usocket as socket
 import smart_home.common.Constants as Constants
 
 

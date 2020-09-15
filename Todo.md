@@ -5,6 +5,7 @@
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
 - ESP8266 button pressed client
+- Handle missing data when polling
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -20,3 +21,4 @@
 - Work out how to serve multiple clients simultaneously
 - Update client server poller to not use threads so that it can work on esp8266 modules
 - Make Epoch time polling client example
+- Make micropython compliant client
