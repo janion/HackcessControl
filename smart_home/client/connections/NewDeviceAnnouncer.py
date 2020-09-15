@@ -1,3 +1,4 @@
+
 import sys
 if sys.implementation.name == "cpython":
     import json
@@ -5,6 +6,7 @@ if sys.implementation.name == "cpython":
 elif sys.implementation.name == "micropython":
     import ujson as json
     from usocket import *
+    import network
 
 import smart_home.common.Constants as Constants
 
@@ -23,16 +25,23 @@ class NewDeviceAnnouncer:
         # Send UDP broadcast to give IP address to server
         print("Requesting server connection")
         cs = socket(AF_INET, SOCK_DGRAM)
-        cs.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        cs.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+        if sys.implementation.name == "cpython":
+            cs.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+            cs.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         cs.sendto(str.encode(self._create_json(name)), ('255.255.255.255', Constants.UDP_PORT_NUMBER))
         cs.close()
 
     def _create_json(self, name):
         data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_ANNOUNCE,
-                Constants.JSON_IP_ADDRESS: gethostbyname(gethostname()),
+                Constants.JSON_IP_ADDRESS: self._get_ip_address(),
                 Constants.JSON_CLIENT_NAME: name}
         return json.dumps(data)
+
+    def _get_ip_address(self):
+        if sys.implementation.name == "cpython":
+            return gethostbyname(gethostname())
+        elif sys.implementation.name == "micropython":
+            return network.WLAN(network.STA_IF).ifconfig()[0]
 
     def _await_server_response(self):
         try:
@@ -56,5 +65,7 @@ class NewDeviceAnnouncer:
             print('Server connected from %s with client name: %s' % (ip, name))
 
             return ip, name
-        except timeout:
+        except:
             pass
+
+

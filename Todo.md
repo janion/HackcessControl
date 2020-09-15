@@ -4,8 +4,8 @@
 - Reject connection based on name or IP, decide accordingly
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
-- ESP8266 button pressed client
 - Handle missing data when polling
+- ESP8266 connection code with hard-coded authentication details factored out into json file
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -22,3 +22,4 @@
 - Update client server poller to not use threads so that it can work on esp8266 modules
 - Make Epoch time polling client example
 - Make micropython compliant client
+- ESP8266 button pressed client
