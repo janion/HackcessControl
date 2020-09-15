@@ -51,7 +51,7 @@ class Interface:
                                        Constants.JSON_STATUS: Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL}
                         clientsocket.send(json.dumps(return_data).encode())
         except Exception as exptn:
-            print(exptn)
+            print("Exception:", exptn)
             self.client_list.remove_client(addr[0])
         finally:
             clientsocket.close()

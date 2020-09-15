@@ -4,7 +4,6 @@
 - Reject connection based on name or IP, decide accordingly
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
-- Make Epoch time polling client example
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -19,3 +18,4 @@
 - Make client generic so that there is an abstract method which contains the specific implementation
 - Work out how to serve multiple clients simultaneously
 - Update client server poller to not use threads so that it can work on esp8266 modules
+- Make Epoch time polling client example
