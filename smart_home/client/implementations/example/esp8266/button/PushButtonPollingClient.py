@@ -8,7 +8,7 @@ from smart_home.client.implementations.example.esp8266.button.PushButtonUpdating
 
 class PushButtonPollingClient(Client):
 
-    POLL_PERIOD = 5
+    POLL_PERIOD = 1
 
     def __init__(self):
         super().__init__("esp8266_button_Poller")
@@ -34,7 +34,7 @@ class PushButtonPollingClient(Client):
                 self.last_button_state = button_state
 
             self.last_poll_time = int(time.time())
-        time.sleep(1)
+        time.sleep(0.1)
 
 
 if __name__ == "__main__":

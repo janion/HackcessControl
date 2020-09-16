@@ -6,6 +6,8 @@
 - Allow requesting of multiple data types in a single request
 - Handle missing data when polling
 - ESP8266 connection code with hard-coded authentication details factored out into json file
+- Allow request for all data types available
+- Add script to move files to correct places on ESP8266
 
 ## Done:
 - Server to store timestamp of last data submission
