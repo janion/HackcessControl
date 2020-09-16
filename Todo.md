@@ -5,9 +5,10 @@
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
 - Handle missing data when polling
-- ESP8266 connection code with hard-coded authentication details factored out into json file
 - Allow request for all data types available
 - Add script to move files to correct places on ESP8266
+- Handle clients disconnecting and reconnecting
+- Add mechanism for ESP8266 to be come an access point with a login page when no wifi credentials found
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -25,3 +26,4 @@
 - Make Epoch time polling client example
 - Make micropython compliant client
 - ESP8266 button pressed client
+- ESP8266 connection code with hard-coded authentication details factored out into json file

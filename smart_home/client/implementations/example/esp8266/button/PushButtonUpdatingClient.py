@@ -22,7 +22,7 @@ class PushButtonUpdatingClient(Client):
 
     def setup_process(self, server_connection):
         print("Server Time: %s" % server_connection.poll(Constants.JSON_TIME)[Constants.JSON_TIME])
-        server_connection.install_field(FIELD_NAME, self.button.value())
+        server_connection.install_field(FIELD_NAME, self.last_button_state)
 
     def process(self, server_connection):
         button_state = 1 - self.button.value()
