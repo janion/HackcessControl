@@ -1,14 +1,17 @@
-import network
 import os
 import ujson as json
 from machine import Pin
+import network
+
+from CaptivePortal import CaptivePortal
 
 
-class Connection():
+CREDENTIALS_FILE = "wifi.json"
+SSID = "ssid"
+PWD = "pwd"
 
-    CREDENTIALS_FILE = "wifi.json"
-    SSID = "ssid"
-    PWD = "pwd"
+
+class Connection:
 
     def __init__(self):
         self.sta_if = network.WLAN(network.STA_IF)
@@ -29,26 +32,30 @@ class Connection():
         if not self.sta_if.isconnected():
             if self.hasBeenConnected:
                 print("Disconnect detected")
-            print("Scanning for networks...")
+            print("Reading credentials")
 
             credentials = self._read_credentials()
-            ssid = credentials[self.SSID]
-            password = credentials[self.PWD]
+            if credentials is not None:
+                ssid = credentials[SSID]
+                password = credentials[PWD]
 
-            networks = self.sta_if.scan()
-            for network in networks:
-                network_ssid = str(network[0])[2:-1]
-                if network_ssid == ssid:
-                    print("Connecting to network:", ssid)
-                    self.sta_if.connect(ssid, password)
-                    while not self.sta_if.isconnected():
-                        pass
+                print("Connecting to network:", ssid)
+                self.sta_if.connect(ssid, password)
+                while not self.sta_if.isconnected():
+                    if self.sta_if.status() in [network.STAT_WRONG_PASSWORD, network.STAT_NO_AP_FOUND, network.STAT_CONNECT_FAIL, network.STAT_IDLE]:
+                        break;
+                if self.sta_if.isconnected():
                     self.hasBeenConnected = True
                     print("Network config:", self.sta_if.ifconfig())
                     self.updateLed()
-                    break
+                    return
+
+            self.sta_if.active(False)
+            captive_portal = CaptivePortal()
+            captive_portal.start()
 
     def _read_credentials(self):
-        if self.CREDENTIALS_FILE in os.listdir():
-            with open(self.CREDENTIALS_FILE, "r") as json_file:
+        if CREDENTIALS_FILE in os.listdir():
+            with open(CREDENTIALS_FILE, "r") as json_file:
                 return json.loads(json_file.read())
+        return None
