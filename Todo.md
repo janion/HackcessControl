@@ -4,11 +4,9 @@
 - Reject connection based on name or IP, decide accordingly
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
-- Handle missing data when polling
-- Allow request for all data types available
-- Add script to move files to correct places on ESP8266
 - Handle clients disconnecting and reconnecting
 - Add mechanism for ESP8266 to be come an access point with a login page when no wifi credentials found
+- Add mechanism for arbitrary connection to poll the total database state? (debugging only)
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -27,3 +25,6 @@
 - Make micropython compliant client
 - ESP8266 button pressed client
 - ESP8266 connection code with hard-coded authentication details factored out into json file
+- Add script to move files to correct places on ESP8266
+- Allow request for all data types available
+- Handle missing data when polling

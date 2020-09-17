@@ -28,12 +28,22 @@ class Interface:
                 if data is not "":
                     # print(data)
                     json_data = json.loads(data)
-                    if json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_POLL:
+                    if json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSPECT:
+                        all_fields = self.database.get_field_names()
+                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
+                                       Constants.JSON_ALL_FIELDS: all_fields}
+                        clientsocket.send(json.dumps(return_data).encode())
+
+                    elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_POLL:
                         data_type = json_data[Constants.JSON_DATA_TYPE]
                         field_update = self.database.get_field_value(data_type)
-                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
-                                       data_type: field_update.get_value(),
-                                       Constants.JSON_UPDATE_TIMESTAMP: field_update.get_time()}
+                        if field_update is not None:
+                            return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
+                                           data_type: field_update.get_value(),
+                                           Constants.JSON_UPDATE_TIMESTAMP: field_update.get_time()}
+                        else:
+                            return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
+                                           data_type: Constants.NO_DATA}
                         clientsocket.send(json.dumps(return_data).encode())
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSTALL:

@@ -26,9 +26,17 @@ class Database:
         return True
 
     def get_field_value(self, field_name):
-        return self.data[self._get_field(field_name)]
+        field = self._get_field(field_name)
+        if field is not None:
+            return self.data[field]
+        else:
+            return None
+
+    def get_field_names(self):
+        return [key.get_name() for key in self.data.keys()]
 
     def _get_field(self, name):
         for field in self.data.keys():
             if field.get_name() == name:
                 return field
+        return None

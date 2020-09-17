@@ -24,14 +24,15 @@ class PushButtonPollingClient(Client):
             result = server_connection.poll(FIELD_NAME)
 
             button_state = result[FIELD_NAME]
-            update_time = result[Constants.JSON_UPDATE_TIMESTAMP]
-            if button_state != self.last_button_state:
-                if button_state:
-                    sys.stdout.write("\rButton pressed at %s" % update_time)
-                else:
-                    sys.stdout.write("\rButton released at %s" % update_time)
-                sys.stdout.flush()
-                self.last_button_state = button_state
+            if button_state != Constants.NO_DATA:
+                update_time = result[Constants.JSON_UPDATE_TIMESTAMP]
+                if button_state != self.last_button_state:
+                    if button_state:
+                        sys.stdout.write("\rButton pressed at %s" % update_time)
+                    else:
+                        sys.stdout.write("\rButton released at %s" % update_time)
+                    sys.stdout.flush()
+                    self.last_button_state = button_state
 
             self.last_poll_time = int(time.time())
         time.sleep(0.1)
