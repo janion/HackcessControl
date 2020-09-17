@@ -3,29 +3,27 @@ import utime as time
 import ujson as json
 import network
 import machine
+import re
 
 
 class CaptivePortal:
-
     class DNSQuery:
         def __init__(self, data):
             self.data = data
             self.domain = ''
 
-            print("Reading datagram data...")
-            m = data[2]  # ord(data[2])
-            type = (m >> 3) & 15  # Opcode bits
-            if type == 0:  # Standard query
+            m = data[2]
+            _type = (m >> 3) & 15  # Opcode bits
+            if _type == 0:  # Standard query
                 start = 12
-                lon = data[start]  # ord(data[start])
+                lon = data[start]
                 while lon != 0:
                     self.domain += data[start + 1:start + lon + 1].decode("utf-8") + '.'
                     start += lon + 1
-                    lon = data[start]  # ord(data[start])
+                    lon = data[start]
 
         def reply(self, ip):
             packet = b''
-            print("Reply {} == {}".format(self.domain, ip))
             if self.domain:
                 packet += self.data[:2] + b"\x81\x80"
                 packet += self.data[4:6] + self.data[4:6] + b'\x00\x00\x00\x00'  # Questions and Answers Counts
@@ -36,25 +34,44 @@ class CaptivePortal:
             return packet
 
     CONTENT = b"""\
-    HTTP/1.0 200 OK
+HTTP/1.0 200 OK
 
-    <!doctype html>
-    <html>
-        <head>
-            <title>Wifi Login</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta charset="utf8">
-        </head>
-        <body>
-            <h1>Set Wifi Credentials</h1>
-            <form action="/connect">
-                SSID: <input type="text" name="ssid" required><br>
-                Password: <input type="text" name="pwd" required><br>
-                <input type="submit" value="Connect">
-            </form>
-        </body>
-    </html>
-    """
+<!doctype html>
+<html>
+    <head>
+        <title>Wifi Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf8">
+    </head>
+    <body>
+        <h1>Set Wifi Credentials</h1>
+        <form action="/connect">
+            SSID: <input type="text" name="ssid" required><br>
+            Password: <input type="text" name="pwd" required><br>
+            <input type="submit" value="Connect">
+        </form>
+    </body>
+</html>
+"""
+
+    SUCCESS = b"""\
+HTTP/1.0 200 OK
+
+<!doctype html>
+<html>
+    <head>
+        <title>Wifi Login Success</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf8">
+    </head>
+    <body>
+        <h1>Thanks!</h1>
+        <h3>Connecting to wifi network...</h3>
+    </body>
+</html>
+"""
+
+    CREDENTIALS_REGEX = ".*/connect\\?ssid=(.*)&pwd=(.*) .*\r\n"
 
     CREDENTIALS_FILE = "wifi.json"
     SSID = "ssid"
@@ -63,7 +80,7 @@ class CaptivePortal:
     def __init__(self):
         self.ap = network.WLAN(network.AP_IF)
         self.ap.active(True)
-        self.ap.config(essid="Connect_to_wifi", password="bananabanana", authmode=4)  # authmode=1 == no pass
+        self.ap.config(essid="Connect_to_wifi", authmode=1)
 
     def start(self):
         # DNS Server
@@ -88,56 +105,44 @@ class CaptivePortal:
 
         try:
             while 1:
-
                 # DNS Loop
-                print("Checking DNS")
                 try:
                     data, addr = udps.recvfrom(1024)
-                    print("Incomming datagram")
                     p = self.DNSQuery(data)
                     udps.sendto(p.reply(ip), addr)
-                    print('Replying: {:s} -> {:s}'.format(p.domain, ip))
                 except:
-                    print("No datagram")
+                    pass
 
                 # Web loop
-                print("Checking webpage requests")
                 try:
                     res = s.accept()
                     client_sock = res[0]
-
                     client_stream = client_sock
 
-                    print("Request:")
                     req = client_stream.readline()
                     print(req)
                     while True:
                         h = client_stream.readline()
                         if h == b"" or h == b"\r\n" or h == None:
                             break
-                        print(h)
+                            #                        print(h)
 
-                    request_url = req[8:-11]
-                    if request_url.startswith('/connect?'):
-                        params = request_url[9:]
-                        try:
-                            credentials = {key: value for (key, value) in [x.split(b'=') for x in params.split(b'&')]}
-                        except:
-                            credentials = {}
-
-                        if self.SSID in credentials.keys() and self.PWD in credentials.keys():
-                            json_map = {self.SSID: credentials[self.SSID],
-                                        self.PWD: credentials[self.PWD]}
-                            json_data = json.dumps(json_map, indent=4)
-                            with open(self.CREDENTIALS_FILE, "w") as json_file:
-                                json_file.write(json_data)
-                            machine.reset()
+                    match = re.match(self.CREDENTIALS_REGEX, req.decode())
+                    if match:
+                        client_stream.write(self.SUCCESS)
+                        client_stream.close()
+                        json_map = {self.SSID: match.group(1),
+                                    self.PWD: match.group(2)}
+                        json_data = json.dumps(json_map)
+                        with open(self.CREDENTIALS_FILE, "w") as json_file:
+                            json_file.write(json_data)
+                        time.sleep(1)
+                        machine.reset()
                     else:
                         client_stream.write(self.CONTENT)
                         client_stream.close()
                 except:
-                    print("timeout for web... moving on...")
-                print("loop")
+                    print("Timeout")
                 time.sleep(0.3)
         except KeyboardInterrupt:
             print('Closing')
