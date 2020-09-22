@@ -7,7 +7,10 @@
 - Allow requesting of multiple data types in a single request
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
 - Add handling for readding the fields when the server disconnects from the client
-- Add handling for not adding duplicate fields when client reconnects
+  - maybe specify added fields in Client constructor
+- Add handling for duplicate clients wanting to update same field with potentially different values
+  - Maybe a mapping of {IP: value} with something to filter to most relevant value?
+    - Sounds too complicated. Maybe just read field before updating in each of the implementations
 
 ## Done:
 - Server to store timestamp of last data submission
