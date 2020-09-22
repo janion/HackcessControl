@@ -1,11 +1,13 @@
 # To Do:
-- Display server database in simple webpage for debugging
+- Display server database in simple webpage for debugging?
 - Update client connection system to just have server constantly (every 60s) broadcast json with ip address?
 - Reject connection based on name or IP, decide accordingly
+- Add mechanism for registered fields to specify how protected the write access is
 - Protect data upload based on name not IP, or both name and IP
 - Allow requesting of multiple data types in a single request
-- Handle clients disconnecting and reconnecting
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
+- Add handling for readding the fields when the server disconnects from the client
+- Add handling for not adding duplicate fields when client reconnects
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -28,3 +30,4 @@
 - Allow request for all data types available
 - Handle missing data when polling
 - Add mechanism for ESP8266 to be come an access point with a login page when no wifi credentials found
+- Handle clients and server disconnecting and reconnecting
