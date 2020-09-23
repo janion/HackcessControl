@@ -21,8 +21,8 @@ class ClientList:
             return True
         return False
 
-    def remove_client(self, ip):
-        existing_client = self._get_client_id(ip)
+    def remove_client(self, name, ip):
+        existing_client = self._get_client_id(name, ip)
         if existing_client is not None:
             self.client_ids.remove(existing_client)
             return True

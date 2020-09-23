@@ -7,18 +7,35 @@ elif sys.implementation.name == "micropython":
     from usocket import *
     import network
 
+import os
+import json
+
 import smart_home.common.Constants as Constants
 
 
 class NewDeviceAnnouncer:
 
+    NAME_FILE = "device_name.json"
+
     def connect_to_server(self, name):
         response = None
+        existing_name = self._find_existing_name_file()
+        if existing_name is not None:
+            client_name = existing_name
+        else:
+            client_name = name
         while response is None:
-            self._anounce_ip_to_server(name)
-            response = self._await_server_response()
+            self._anounce_ip_to_server(client_name)
+            response = self._await_server_response(name)
 
         return response
+
+    def _find_existing_name_file(self, desired_name):
+        if self.NAME_FILE in os.listdir():
+            with open(self.NAME_FILE, "r") as name_file:
+                json_data = json.loads(name_file.read())
+            return json_data[desired_name]
+        return None
 
     def _anounce_ip_to_server(self, name):
         # Send UDP broadcast to give IP address to server
@@ -42,7 +59,7 @@ class NewDeviceAnnouncer:
         elif sys.implementation.name == "micropython":
             return network.WLAN(network.STA_IF).ifconfig()[0]
 
-    def _await_server_response(self):
+    def _await_server_response(self, desired_name):
         try:
             # Await the server to give its IP address
             addr = getaddrinfo('0.0.0.0', Constants.SERVER_CONNECTION_PORT_NUMBER)[0][-1]
@@ -60,11 +77,22 @@ class NewDeviceAnnouncer:
 
             json_data = json.loads(data)
             ip = json_data[Constants.JSON_IP_ADDRESS]
-            name = json_data[Constants.JSON_CLIENT_NAME]
-            print('Server connected from %s with client name: %s' % (ip, name))
+            assigned_name = json_data[Constants.JSON_CLIENT_NAME]
+            print('Server connected from %s with client name: %s' % (ip, assigned_name))
 
-            return ip, name
+            self._write_name_file(desired_name, assigned_name)
+            return ip, assigned_name
         except:
             pass
 
+    def _write_name_file(self, desired_name, assigned_name):
+        if self.NAME_FILE in os.listdir():
+            with open(self.NAME_FILE, "r") as name_file:
+                json_data = json.loads(name_file.read())
+        else:
+            json_data = {}
 
+        if desired_name not in json_data.keys():
+            json_data[desired_name] = assigned_name
+            with open(self.NAME_FILE, "w") as name_file:
+                name_file.write(json.dumps(json_data))

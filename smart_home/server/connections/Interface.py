@@ -22,6 +22,7 @@ class Interface:
         self.thread.start()
 
     def _on_new_client(self, clientsocket, addr):
+        name = None
         try:
             while True:
                 data = clientsocket.recv(1024).decode()
@@ -29,12 +30,14 @@ class Interface:
                     # print(data)
                     json_data = json.loads(data)
                     if json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSPECT:
+                        name = json_data[Constants.JSON_CLIENT_NAME]
                         all_fields = self.database.get_field_names()
                         return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
                                        Constants.JSON_ALL_FIELDS: all_fields}
                         clientsocket.send(json.dumps(return_data).encode())
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_POLL:
+                        name = json_data[Constants.JSON_CLIENT_NAME]
                         data_type = json_data[Constants.JSON_DATA_TYPE]
                         field_update = self.database.get_field_value(data_type)
                         if field_update is not None:
@@ -47,6 +50,7 @@ class Interface:
                         clientsocket.send(json.dumps(return_data).encode())
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSTALL:
+                        name = json_data[Constants.JSON_CLIENT_NAME]
                         data_type = json_data[Constants.JSON_DATA_TYPE]
                         value = json_data[data_type]
                         set_ok = self.database.add_field(data_type, addr[0], value)
@@ -55,6 +59,7 @@ class Interface:
                         clientsocket.send(json.dumps(return_data).encode())
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_UPDATE:
+                        name = json_data[Constants.JSON_CLIENT_NAME]
                         data_type = json_data[Constants.JSON_DATA_TYPE]
                         value = json_data[data_type]
                         set_ok = self.database.set_field_value(data_type, value, addr[0])
@@ -64,7 +69,8 @@ class Interface:
                 sleep(1)
         except Exception as exptn:
             print("Exception:", exptn)
-            self.client_list.remove_client(addr[0])
+            if name is not None:
+                self.client_list.remove_client(name, addr[0])
         finally:
             clientsocket.close()
 
