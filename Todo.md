@@ -11,6 +11,15 @@
 - Add handling for duplicate clients wanting to update same field with potentially different values
   - Maybe a mapping of {IP: value} with something to filter to most relevant value?
     - Sounds too complicated. Maybe just read field before updating in each of the implementations
+- Add device name as option on esp8266 login
+- Add server webpage to create groupings for clients
+  - eg "Living Room Lights" = ["Light1", "Light2", "Light3"]
+  - This would allow for voice commands to allow for individual lights to be switched or all at once
+- Store the device name in a .json file so that deviced don't change names after a power cut
+  - On startup each device looks for a device name file before using the default name
+- Email client for field
+  - Send email when field value changes
+- Store names in Interface client thread so that removal of a client removes the actual client, not just the first client with the given IP address
 
 ## Done:
 - Server to store timestamp of last data submission
@@ -34,3 +43,4 @@
 - Handle missing data when polling
 - Add mechanism for ESP8266 to be come an access point with a login page when no wifi credentials found
 - Handle clients and server disconnecting and reconnecting
+- Lock database when client request comes in

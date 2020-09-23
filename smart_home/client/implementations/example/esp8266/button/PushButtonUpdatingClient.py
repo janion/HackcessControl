@@ -15,14 +15,13 @@ class PushButtonUpdatingClient(Client):
     PRESS_TIME_INTERVAL = 1
 
     def __init__(self):
-        super().__init__("esp8266_button_updater")
+        super().__init__("esp8266_button_updater", [(FIELD_NAME, 0)])
         self.button = Pin(5, Pin.IN, Pin.PULL_UP)
         self.last_state_change = time.time()
         self.last_button_state = 1 - self.button.value()
 
     def setup_process(self, server_connection):
         print("Server Time: %s" % server_connection.poll(Constants.JSON_TIME)[Constants.JSON_TIME])
-        server_connection.install_field(FIELD_NAME, self.last_button_state)
 
     def process(self, server_connection):
         button_state = 1 - self.button.value()

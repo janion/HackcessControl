@@ -11,7 +11,7 @@ class PushButtonPollingClient(Client):
     POLL_PERIOD = 1
 
     def __init__(self):
-        super().__init__("esp8266_button_Poller")
+        super().__init__("esp8266_button_poller")
 
         self.last_poll_time = 0
         self.last_button_state = 0

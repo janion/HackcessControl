@@ -6,12 +6,8 @@ from smart_home.client.implementations.example.epoch_time.EpochTimePollingClient
 class EpochTimeUpdatingClient(EpochTimePollingClient):
 
     def __init__(self):
-        super().__init__("EpochTimeUpdater")
+        super().__init__("EpochTimeUpdater", fields=[(self.FIELD_NAME, 0)])
         self.last_local_time = 0
-
-    def setup_process(self, server_connection):
-        super().setup_process(server_connection)
-        server_connection.install_field(self.FIELD_NAME, self.last_local_time)
 
     def process(self, server_connection):
         super().process(server_connection)

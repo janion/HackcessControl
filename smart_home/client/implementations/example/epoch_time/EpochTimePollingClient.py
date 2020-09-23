@@ -10,8 +10,8 @@ class EpochTimePollingClient(Client):
     POLL_PERIOD = 5
     FIELD_NAME = "client_time"
 
-    def __init__(self, name="EpochTimePoller"):
-        super().__init__(name)
+    def __init__(self, name="EpochTimePoller", **kwargs):
+        super().__init__(name, kwargs)
 
         self.last_poll_time = 0
         self.last_local_time = 0
