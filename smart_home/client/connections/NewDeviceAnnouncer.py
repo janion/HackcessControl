@@ -19,7 +19,7 @@ class NewDeviceAnnouncer:
 
     def connect_to_server(self, name):
         response = None
-        existing_name = self._find_existing_name_file()
+        existing_name = self._find_existing_name_file(name)
         if existing_name is not None:
             client_name = existing_name
         else:
