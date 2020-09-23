@@ -1,13 +1,11 @@
 # To Do:
 - Display server database in simple webpage for debugging?
 - Update client connection system to just have server constantly (every 60s) broadcast json with ip address?
-- Reject connection based on name or IP, decide accordingly
-- Add mechanism for registered fields to specify how protected the write access is
-- Protect data upload based on name not IP, or both name and IP
+- Reject connection based on name or IP, decide accordingly?
+- Add mechanism for registered fields to specify how protected the write access is?
+- Protect data upload based on name not IP, or both name and IP?
 - Allow requesting of multiple data types in a single request
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
-- Add handling for readding the fields when the server disconnects from the client
-  - maybe specify added fields in Client constructor
 - Add handling for duplicate clients wanting to update same field with potentially different values
   - Maybe a mapping of {IP: value} with something to filter to most relevant value?
     - Sounds too complicated. Maybe just read field before updating in each of the implementations
@@ -43,3 +41,4 @@
 - Lock database when client request comes in
 - Store names in Interface client thread so that removal of a client removes the actual client, not just the first client with the given IP address
 - Store the device name in a .json file so that devices don't change names after a power cut
+- Add handling for readding the fields when the server disconnects from the client
