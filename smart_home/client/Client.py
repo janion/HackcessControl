@@ -27,7 +27,7 @@ class Client:
     def _connect_to_server(self):
         self.server_ip, self.name = self.announcer.connect_to_server(self.name)
         if self.server_connection is None:
-            self.server_connection = ServerConnection(self.server_ip)
+            self.server_connection = ServerConnection(self.server_ip, self.name)
         for field in self.fields:
             self.server_connection.install_field(field[0], field[1])
 
