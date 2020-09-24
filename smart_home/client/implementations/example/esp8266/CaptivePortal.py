@@ -5,8 +5,11 @@ import network
 import machine
 import re
 
+import smart_home.common.Constants as Constants
+
 
 class CaptivePortal:
+
     class DNSQuery:
         def __init__(self, data):
             self.data = data
@@ -48,6 +51,7 @@ HTTP/1.0 200 OK
         <form action="/connect">
             SSID: <input type="text" name="ssid" required><br>
             Password: <input type="text" name="pwd" required><br>
+            Device Name: <input type="text" name="name" required><br>
             <input type="submit" value="Connect">
         </form>
     </body>
@@ -71,11 +75,12 @@ HTTP/1.0 200 OK
 </html>
 """
 
-    CREDENTIALS_REGEX = ".*/connect\\?ssid=(.*)&pwd=(.*) .*\r\n"
+    CREDENTIALS_REGEX = ".*/connect\\?ssid=(.*)&pwd=(.*)&name=(.*) .*\r\n"
 
     CREDENTIALS_FILE = "wifi.json"
     SSID = "ssid"
     PWD = "pwd"
+    NAME = "name"
 
     def __init__(self):
         self.ap = network.WLAN(network.AP_IF)
@@ -104,46 +109,59 @@ HTTP/1.0 200 OK
         print("Web Server: Listening http://{}:80/".format(ip))
 
         try:
-            while 1:
-                # DNS Loop
-                try:
-                    data, addr = udps.recvfrom(1024)
-                    p = self.DNSQuery(data)
-                    udps.sendto(p.reply(ip), addr)
-                except:
-                    pass
-
-                # Web loop
-                try:
-                    res = s.accept()
-                    client_sock = res[0]
-                    client_stream = client_sock
-
-                    req = client_stream.readline()
-                    print(req)
-                    while True:
-                        h = client_stream.readline()
-                        if h == b"" or h == b"\r\n" or h == None:
-                            break
-                            #                        print(h)
-
-                    match = re.match(self.CREDENTIALS_REGEX, req.decode())
-                    if match:
-                        client_stream.write(self.SUCCESS)
-                        client_stream.close()
-                        json_map = {self.SSID: match.group(1),
-                                    self.PWD: match.group(2)}
-                        json_data = json.dumps(json_map)
-                        with open(self.CREDENTIALS_FILE, "w") as json_file:
-                            json_file.write(json_data)
-                        time.sleep(1)
-                        machine.reset()
-                    else:
-                        client_stream.write(self.CONTENT)
-                        client_stream.close()
-                except:
-                    print("Timeout")
+            while True:
+                self._process_dns(udps, ip)
+                self._process_web(s)
                 time.sleep(0.3)
         except KeyboardInterrupt:
             print('Closing')
         udps.close()
+
+    def _process_dns(self, udps, ip):
+        try:
+            data, addr = udps.recvfrom(1024)
+            p = self.DNSQuery(data)
+            udps.sendto(p.reply(ip), addr)
+        except:
+            pass
+
+    def _process_web(self, s):
+        try:
+            res = s.accept()
+            client_sock = res[0]
+            client_stream = client_sock
+
+            req = client_stream.readline()
+            print(req)
+            while True:
+                h = client_stream.readline()
+                if h == b"" or h == b"\r\n" or h is None:
+                    break
+                    # print(h)
+
+            match = re.match(self.CREDENTIALS_REGEX, req.decode())
+            if match:
+                client_stream.write(self.SUCCESS)
+                client_stream.close()
+                self._write_credentials_file(match.group(1), match.group(2))
+                self._write_device_name_file(match.group(3))
+                time.sleep(1)
+                machine.reset()
+            else:
+                client_stream.write(self.CONTENT)
+                client_stream.close()
+        except:
+            print("Timeout")
+
+    def _write_credentials_file(self, ssid, pwd):
+        json_map = {self.SSID: ssid,
+                    self.PWD: pwd}
+        json_data = json.dumps(json_map)
+        with open(self.CREDENTIALS_FILE, "w") as json_file:
+            json_file.write(json_data)
+
+    def _write_device_name_file(self, name):
+        json_map = {Constants.JSON_CLIENT_NAME: name}
+        json_data = json.dumps(json_map)
+        with open(Constants.DEVICE_NAME_FILE, "w") as json_file:
+            json_file.write(json_data)

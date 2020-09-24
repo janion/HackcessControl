@@ -6,10 +6,9 @@
 - Protect data upload based on name not IP, or both name and IP?
 - Allow requesting of multiple data types in a single request
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
-- Add handling for duplicate clients wanting to update same field with potentially different values
+- Add handling for duplicate clients wanting to update same field with potentially different values?
   - Maybe a mapping of {IP: value} with something to filter to most relevant value?
     - Sounds too complicated. Maybe just read field before updating in each of the implementations
-- Add device name as option on esp8266 login
 - Add server webpage to create groupings for clients
   - eg "Living Room Lights" = ["Light1", "Light2", "Light3"]
   - This would allow for voice commands to allow for individual lights to be switched or all at once
@@ -42,3 +41,4 @@
 - Store names in Interface client thread so that removal of a client removes the actual client, not just the first client with the given IP address
 - Store the device name in a .json file so that devices don't change names after a power cut
 - Add handling for readding the fields when the server disconnects from the client
+- Add device name as option on esp8266 login

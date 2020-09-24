@@ -15,8 +15,6 @@ import smart_home.common.Constants as Constants
 
 class NewDeviceAnnouncer:
 
-    NAME_FILE = "device_name.json"
-
     def connect_to_server(self, name):
         response = None
         existing_name = self._find_existing_name_file(name)
@@ -31,10 +29,14 @@ class NewDeviceAnnouncer:
         return response
 
     def _find_existing_name_file(self, desired_name):
-        if self.NAME_FILE in os.listdir():
-            with open(self.NAME_FILE, "r") as name_file:
+        if Constants.DEVICE_NAME_FILE in os.listdir():
+            with open(Constants.DEVICE_NAME_FILE, "r") as name_file:
                 json_data = json.loads(name_file.read())
-            return json_data[desired_name]
+
+            if desired_name in json_data.keys():
+                return json_data[desired_name]
+            elif Constants.JSON_CLIENT_NAME in json_data.keys():
+                return json_data[Constants.JSON_CLIENT_NAME]
         return None
 
     def _anounce_ip_to_server(self, name):
@@ -86,13 +88,13 @@ class NewDeviceAnnouncer:
             pass
 
     def _write_name_file(self, desired_name, assigned_name):
-        if self.NAME_FILE in os.listdir():
-            with open(self.NAME_FILE, "r") as name_file:
+        if Constants.DEVICE_NAME_FILE in os.listdir():
+            with open(Constants.DEVICE_NAME_FILE, "r") as name_file:
                 json_data = json.loads(name_file.read())
         else:
             json_data = {}
 
         if desired_name not in json_data.keys():
             json_data[desired_name] = assigned_name
-            with open(self.NAME_FILE, "w") as name_file:
+            with open(Constants.DEVICE_NAME_FILE, "w") as name_file:
                 name_file.write(json.dumps(json_data))
