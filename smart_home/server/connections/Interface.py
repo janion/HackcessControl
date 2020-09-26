@@ -38,21 +38,25 @@ class Interface:
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_POLL:
                         name = json_data[Constants.JSON_CLIENT_NAME]
+                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA}
+
                         data_type = json_data[Constants.JSON_DATA_TYPE]
-                        field_update = self.database.get_field_value(data_type)
-                        if field_update is not None:
-                            return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
-                                           data_type: field_update.get_value(),
-                                           Constants.JSON_UPDATE_TIMESTAMP: field_update.get_time()}
-                        else:
-                            return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
-                                           data_type: Constants.NO_DATA}
+                        for each_data_type in data_type:
+                            field_update = self.database.get_field_value(each_data_type)
+                            field_update_data = {}
+                            if field_update is not None:
+                                field_update_data[Constants.JSON_VALUE] = field_update.get_value()
+                                field_update_data[Constants.JSON_UPDATE_TIMESTAMP] = field_update.get_time()
+                            else:
+                                field_update_data[Constants.JSON_VALUE] = Constants.NO_DATA
+
+                            return_data[each_data_type] = field_update_data
                         clientsocket.send(json.dumps(return_data).encode())
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSTALL:
                         name = json_data[Constants.JSON_CLIENT_NAME]
                         data_type = json_data[Constants.JSON_DATA_TYPE]
-                        value = json_data[data_type]
+                        value = json_data[Constants.JSON_VALUE]
                         set_ok = self.database.add_field(data_type, addr[0], value)
                         return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_INSTALL_STATUS,
                                        Constants.JSON_STATUS: Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL}
@@ -61,7 +65,7 @@ class Interface:
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_UPDATE:
                         name = json_data[Constants.JSON_CLIENT_NAME]
                         data_type = json_data[Constants.JSON_DATA_TYPE]
-                        value = json_data[data_type]
+                        value = json_data[Constants.JSON_VALUE]
                         set_ok = self.database.set_field_value(data_type, value, addr[0])
                         return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_UPDATE_STATUS,
                                        Constants.JSON_STATUS: Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL}

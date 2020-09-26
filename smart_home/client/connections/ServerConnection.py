@@ -14,8 +14,8 @@ class ServerConnection:
         self.server_ip = server_ip
         self.client_name = client_name
 
-    def poll(self, data_type):
-        return self._send_to_server(Constants.JSON_MESSAGE_TYPE_POLL, data_type)
+    def poll(self, *data_type):
+        return self._send_to_server(Constants.JSON_MESSAGE_TYPE_POLL, list(data_type))
 
     def install_field(self, data_type, value):
         return self._send_to_server(Constants.JSON_MESSAGE_TYPE_INSTALL, data_type, value)
@@ -39,5 +39,5 @@ class ServerConnection:
                 Constants.JSON_CLIENT_NAME: self.client_name,
                 Constants.JSON_DATA_TYPE: data_type}
         if value is not None:
-            data[data_type] = value;
+            data[Constants.JSON_VALUE] = value;
         return json.dumps(data)

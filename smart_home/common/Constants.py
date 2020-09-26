@@ -28,7 +28,10 @@ JSON_STATUS = "status"
 JSON_STATUS_OK = "ok"
 JSON_STATUS_FAIL = "fail"
 JSON_UPDATE_TIMESTAMP = "last_updated"
+JSON_VALUE = "value"
 
 JSON_TIME_FORMAT = "%H:%M:%S"
 
 NO_DATA = "NO DATA"
+ON = "on"
+OFF = "off"

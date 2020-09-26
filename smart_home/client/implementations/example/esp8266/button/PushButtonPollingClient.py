@@ -17,13 +17,14 @@ class PushButtonPollingClient(Client):
         self.last_button_state = 0
 
     def setup_process(self, server_connection):
-        print("Server Time: %s" % server_connection.poll(Constants.JSON_TIME)[Constants.JSON_TIME])
+        time_update = server_connection.poll(Constants.JSON_TIME)[Constants.JSON_TIME]
+        print("Server Time: %s" % time_update[Constants.JSON_VALUE])
 
     def process(self, server_connection):
-        if int(time.time()) > self.last_poll_time + self.POLL_PERIOD:
+        if int(time.time()) - self.last_poll_time > self.POLL_PERIOD:
             result = server_connection.poll(FIELD_NAME)
 
-            button_state = result[FIELD_NAME]
+            button_state = result[FIELD_NAME][Constants.JSON_VALUE]
             if button_state != Constants.NO_DATA:
                 update_time = result[Constants.JSON_UPDATE_TIMESTAMP]
                 if button_state != self.last_button_state:

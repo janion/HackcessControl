@@ -15,7 +15,6 @@ class Client:
 
     def start(self):
         self._connect_to_server()
-
         self.setup_process(self.server_connection)
 
         while True:

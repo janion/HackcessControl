@@ -4,14 +4,18 @@
 - Reject connection based on name or IP, decide accordingly?
 - Add mechanism for registered fields to specify how protected the write access is?
 - Protect data upload based on name not IP, or both name and IP?
-- Allow requesting of multiple data types in a single request
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
 - Add handling for duplicate clients wanting to update same field with potentially different values?
   - Maybe a mapping of {IP: value} with something to filter to most relevant value?
     - Sounds too complicated. Maybe just read field before updating in each of the implementations
+- Client group option within client and captive portal
+  - Serves as intermediate step to adding a grouping webpage
 - Add server webpage to create groupings for clients
   - eg "Living Room Lights" = ["Light1", "Light2", "Light3"]
   - This would allow for voice commands to allow for individual lights to be switched or all at once
+  
+## Client ideas:
+- Voice control client
 - Email client for field
   - Send email when field value changes
 
@@ -42,3 +46,4 @@
 - Store the device name in a .json file so that devices don't change names after a power cut
 - Add handling for readding the fields when the server disconnects from the client
 - Add device name as option on esp8266 login
+- Allow requesting of multiple data types in a single request
