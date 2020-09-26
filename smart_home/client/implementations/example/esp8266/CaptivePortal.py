@@ -8,6 +8,10 @@ import re
 import smart_home.common.Constants as Constants
 
 
+# Based off existing code found here:
+# https://github.com/amora-labs/micropython-captive-portal
+
+
 class CaptivePortal:
 
     class DNSQuery:
