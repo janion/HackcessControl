@@ -15,7 +15,7 @@ class RelayClient(Client):
         self.last_poll_time = 0
 
     def setup_process(self, server_connection):
-        self.server_connection.install_field(self.name, 0)
+        self.server_connection.install_field(self.name, Constants.OFF)
 
         time_update = server_connection.poll(Constants.JSON_TIME)[Constants.JSON_TIME]
         print("Server Time: %s" % time_update[Constants.JSON_VALUE])

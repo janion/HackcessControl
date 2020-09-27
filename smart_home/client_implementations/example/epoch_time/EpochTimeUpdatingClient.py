@@ -1,6 +1,6 @@
 import time
 
-from smart_home.client.implementations.example.epoch_time.EpochTimePollingClient import EpochTimePollingClient
+from smart_home.client_implementations.example import EpochTimePollingClient
 
 
 class EpochTimeUpdatingClient(EpochTimePollingClient):

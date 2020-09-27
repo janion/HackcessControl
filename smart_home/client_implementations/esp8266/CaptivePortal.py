@@ -55,7 +55,7 @@ HTTP/1.0 200 OK
         <form action="/connect">
             SSID: <input type="text" name="ssid" required><br>
             Password: <input type="text" name="pwd" required><br>
-            Device Name: <input type="text" name="name" required><br>
+            Device Name: <input type="text" name="name" pattern="[a-zA-Z ]" required><br>
             <input type="submit" value="Connect">
         </form>
     </body>
@@ -148,7 +148,7 @@ HTTP/1.0 200 OK
                 client_stream.write(self.SUCCESS)
                 client_stream.close()
                 self._write_credentials_file(match.group(1), match.group(2))
-                self._write_device_name_file(match.group(3))
+                self._write_device_name_file(match.group(3).replace("%20", " "))
                 time.sleep(1)
                 machine.reset()
             else:
