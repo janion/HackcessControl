@@ -1,6 +1,7 @@
 import time
 import re
 import os
+import json
 import speech_recognition as sr
 from threading import Thread, RLock
 from google.cloud import texttospeech as tts
@@ -16,7 +17,7 @@ class VoiceCommandClient(Client):
     class Command:
 
         def __init__(self, regex, item_group, action_group):
-            self.regex = regex.replace(" please", "").replace("please ", "")
+            self.regex = regex
             self.item_group = item_group
             self.action_group = action_group
 
@@ -78,7 +79,7 @@ class VoiceCommandClient(Client):
 
     def _process_command(self, parsed_speech):
         for command in self.COMMANDS:
-            match = re.match(command.regex, parsed_speech)
+            match = re.match(command.regex, parsed_speech.replace(" please", "").replace("please ", ""))
             if match:
                 item = match.group(command.item_group).strip()
                 action = match.group(command.action_group)
@@ -105,8 +106,12 @@ class VoiceCommandClient(Client):
             self._speak("I'm sorry, I seem to be having connection issues right now. Please try again")
             # print("I'm sorry, I seem to be having connection issues right now. Please try again")
         self.recogniser_lock.release()
+
         if parsed_text is not None:
-            callback(parsed_text)
+            try:
+                callback(parsed_text)
+            except json.decoder.JSONDecodeError:
+                self._speak("I'm sorry, something went wrong. Please try again")
 
     # def _speak(self, text):
     #     text_input = tts.SynthesisInput(text=text)

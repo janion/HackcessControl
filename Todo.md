@@ -2,7 +2,6 @@
 - Display server database in simple webpage for debugging?
 - Update client connection system to just have server constantly (every 60s) broadcast json with ip address?
 - Reject connection based on name or IP, decide accordingly?
-- Add mechanism for registered fields to specify how protected the write access is?
 - Protect data upload based on name not IP, or both name and IP?
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
 - Add handling for duplicate clients wanting to update same field with potentially different values?
@@ -13,9 +12,10 @@
 - Add server webpage to create groupings for clients
   - eg "Living Room Lights" = ["Light1", "Light2", "Light3"]
   - This would allow for voice commands to allow for individual lights to be switched or all at once
+- Add mechanism for registered fields to specify how protected the write access is
   
 ## Client ideas:
-- Voice control client
+- [Done] Voice control client
 - Email client for field
   - Send email when field value changes
 
