@@ -6,6 +6,7 @@ import speech_recognition as sr
 from threading import Thread, RLock
 from google.cloud import texttospeech as tts
 from google.oauth2 import service_account
+from google.api_core.exceptions import ServiceUnavailable
 from pygame import mixer
 
 from smart_home.client.Client import Client
@@ -102,7 +103,7 @@ class VoiceCommandClient(Client):
         except sr.UnknownValueError:
             self._speak("I'm sorry I didn't catch that")
             # print("I'm sorry I didn't catch that")
-        except sr.RequestError:
+        except (sr.RequestError, ServiceUnavailable):
             self._speak("I'm sorry, I seem to be having connection issues right now. Please try again")
             # print("I'm sorry, I seem to be having connection issues right now. Please try again")
         self.recogniser_lock.release()
