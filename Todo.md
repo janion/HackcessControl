@@ -13,6 +13,11 @@
   - eg "Living Room Lights" = ["Light1", "Light2", "Light3"]
   - This would allow for voice commands to allow for individual lights to be switched or all at once
 - Add mechanism for registered fields to specify how protected the write access is
+- Add other functions to voice assistant
+  - Simple listening sounds
+  - Snowboy on raspberry pi
+  - Timers
+  - Spotify via pyspotify & libspotify
   
 ## Client ideas:
 - [Done] Voice control client
