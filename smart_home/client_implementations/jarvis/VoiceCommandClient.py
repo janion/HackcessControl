@@ -9,9 +9,10 @@ from google.api_core.exceptions import ServiceUnavailable
 from google.cloud import texttospeech as tts
 from google.oauth2 import service_account
 from pygame import mixer
-from smart_home.client_implementations.jarvis.SwitchOnCommand import SwitchOnItemCommand
 
 from smart_home.client.Client import Client
+from smart_home.client_implementations.jarvis.commands.SwitchOnCommand import SwitchOnItemCommand
+from smart_home.client_implementations.jarvis.commands.TimerCommand import TimerCommand
 from smart_home.client_implementations.jarvis.commands.CancelCommand import CancelCommand
 
 
@@ -44,6 +45,7 @@ class VoiceCommandClient(Client):
 
     def setup_process(self, server_connection):
         self.commands.append(SwitchOnItemCommand(self._speak, self.server_connection))
+        self.commands.append(TimerCommand(self._speak, self.server_connection))
         self.commands.append(CancelCommand(self._speak, self.server_connection))
 
         # Start snowboy
@@ -139,7 +141,7 @@ class VoiceCommandClient(Client):
         if text in self.speech_filenames.keys():
             return self.speech_filenames[text]
         else:
-            filename = self.SOUNDS_FOLDER + re.subn("([^a-zA-Z ]+)", "", text)[0].replace(" ", "_").lower() + ".wav"
+            filename = self.SOUNDS_FOLDER + re.subn("([^a-zA-Z0-9 ]+)", "", text)[0].replace(" ", "_").lower() + ".wav"
             self.speech_filenames[text] = filename
             return filename
 

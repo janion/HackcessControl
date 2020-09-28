@@ -19,7 +19,8 @@ class SwitchOnItemCommand(Command):
     # Almost worked: "(?:please ?)?turn (on|off) (?:the ?)?(.*)(?: please?)?"
     SWITCH_ON_X_REGEX = CommandRegex(".*(turn|switch) (%s|%s) ((?:the ?)?)(.*)" % (Constants.ON, Constants.OFF), 3, 4, 1, 2)
     SWITCH_X_ON_REGEX = CommandRegex(".*(turn|switch) ((?:the ?)?)(%s|%s)(.*)" % (Constants.ON, Constants.OFF), 2, 3, 1, 4)
-    COMMAND_REGEXES = [SWITCH_ON_X_REGEX, SWITCH_X_ON_REGEX]
+    COMMAND_REGEXES = [SWITCH_ON_X_REGEX,
+                       SWITCH_X_ON_REGEX]
 
     def consume(self, parsed_speech):
         for command in self.COMMAND_REGEXES:
