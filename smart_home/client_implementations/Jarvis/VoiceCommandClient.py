@@ -65,7 +65,7 @@ class VoiceCommandClient(Client):
 
                 # Listening tone
                 # self._speak("I'm listening")
-                self._play([self.WAKE_TONE_FILE])
+                self._play(self.WAKE_TONE_FILE)
                 # print("Listening")
 
                 audio = self.recogniser.listen(source, timeout=5, phrase_time_limit=10)
@@ -78,7 +78,7 @@ class VoiceCommandClient(Client):
         finally:
             # End listening tone
             # self._speak("Finished listening")
-            self._play([self.SLEEP_TONE_FILE])
+            self._play(self.SLEEP_TONE_FILE)
             # print("Finished listening")
             pass
 
@@ -147,7 +147,7 @@ class VoiceCommandClient(Client):
                     out.write(response.audio_content)
                     print(f'Audio content written to "{filename}"')
             files_to_speak.append(filename)
-        self._play(files_to_speak)
+        self._play(*files_to_speak)
 
     def _convert_text_to_filename(self, text):
         if text in self.speech_filenames.keys():
@@ -157,7 +157,7 @@ class VoiceCommandClient(Client):
             self.speech_filenames[text] = filename
             return filename
 
-    def _play(self, files_to_play):
+    def _play(self, *files_to_play):
         self.speaker_lock.acquire()
         for file_to_play in files_to_play:
             mixer.music.load(file_to_play)
