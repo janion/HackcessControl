@@ -1,17 +1,18 @@
-import time
-import re
-import os
 import json
-import speech_recognition as sr
+import os
+import re
+import time
 from threading import Thread, RLock
+
+import speech_recognition as sr
+from google.api_core.exceptions import ServiceUnavailable
 from google.cloud import texttospeech as tts
 from google.oauth2 import service_account
-from google.api_core.exceptions import ServiceUnavailable
 from pygame import mixer
+from smart_home.client_implementations.jarvis.SwitchOnCommand import SwitchOnItemCommand
 
 from smart_home.client.Client import Client
-from smart_home.client_implementations.jarvis.SwitchOnCommand import SwitchOnItemCommand
-from smart_home.client_implementations.jarvis.CancelCommand import CancelCommand
+from smart_home.client_implementations.jarvis.commands.CancelCommand import CancelCommand
 
 
 class VoiceCommandClient(Client):

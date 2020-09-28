@@ -1,9 +1,10 @@
 import re
+
 import smart_home.common.Constants as Constants
-from smart_home.client_implementations.jarvis.Command import Command, CommandRegex
+from smart_home.client_implementations.jarvis.commands.Command import Command, CommandRegex
 
 
-class SwitchOnItemCommand(Command):
+class TimerCommand(Command):
 
     # Almost worked: "(?:please ?)?turn (on|off) (?:the ?)?(.*)(?: please?)?"
     SWITCH_ON_X_REGEX = CommandRegex(".*?[turn|switch] (%s|%s) (?:the ?)?(.*)" % (Constants.ON, Constants.OFF), 2, 1)

@@ -1,6 +1,17 @@
 import re
+
 import smart_home.common.Constants as Constants
-from smart_home.client_implementations.jarvis.Command import Command, CommandRegex
+from smart_home.client_implementations.jarvis.commands.Command import Command
+
+
+class CommandRegex:
+
+    def __init__(self, regex, the_group, item_group, action_group, value_group):
+        self.regex = regex
+        self.the_group = the_group
+        self.item_group = item_group
+        self.action_group = action_group
+        self.value_group = value_group
 
 
 class SwitchOnItemCommand(Command):

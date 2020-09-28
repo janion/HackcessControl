@@ -1,4 +1,4 @@
-from smart_home.client_implementations.jarvis.Command import Command
+from smart_home.client_implementations.jarvis.commands.Command import Command
 
 
 class CancelCommand(Command):
