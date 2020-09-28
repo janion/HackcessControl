@@ -10,28 +10,18 @@ from google.api_core.exceptions import ServiceUnavailable
 from pygame import mixer
 
 from smart_home.client.Client import Client
-import smart_home.common.Constants as Constants
+from smart_home.client_implementations.jarvis.SwitchOnCommand import SwitchOnItemCommand
+from smart_home.client_implementations.jarvis.CancelCommand import CancelCommand
 
 
 class VoiceCommandClient(Client):
 
-    class Command:
-
-        def __init__(self, regex, item_group, action_group):
-            self.regex = regex
-            self.item_group = item_group
-            self.action_group = action_group
-
     BACKGROUND_ADJUSTMENT_PERIOD = 20
 
-    # Almost worked: "(?:please ?)?turn (on|off) (?:the ?)?(.*)(?: please?)?"
-    COMMANDS = [Command(".*?[turn|switch] (%s|%s) (?:the ?)?(.*)" % (Constants.ON, Constants.OFF), 2, 1),
-                Command(".*?[turn|switch] (?:the ?)?(.*) (%s|%s)" % (Constants.ON, Constants.OFF), 1, 2)
-                ]
-
-    CREDENTIALS_FILE = "Jarvis-74f83c8acc1f.json"
-    WAKE_TONE_FILE = "wake.wav"
-    SLEEP_TONE_FILE = "sleep.wav"
+    CREDENTIALS_FILE = "jarvis-74f83c8acc1f.json"
+    SOUNDS_FOLDER = "sounds/"
+    WAKE_TONE_FILE = SOUNDS_FOLDER + "WAKE_TONE.wav"
+    SLEEP_TONE_FILE = SOUNDS_FOLDER + "SLEEP_TONE.wav"
 
     def __init__(self):
         super().__init__("JarvisVoiceCommand")
@@ -46,10 +36,15 @@ class VoiceCommandClient(Client):
         self.audio_config = tts.AudioConfig(audio_encoding=tts.AudioEncoding.LINEAR16)
         self.client = tts.TextToSpeechClient(credentials=service_account.Credentials.from_service_account_file(self.CREDENTIALS_FILE))
 
+        self.commands = []
+
         mixer.init()
         self.speech_filenames = {}
 
     def setup_process(self, server_connection):
+        self.commands.append(SwitchOnItemCommand(self._speak, self.server_connection))
+        self.commands.append(CancelCommand(self._speak, self.server_connection))
+
         # Start snowboy
         pass
 
@@ -83,18 +78,8 @@ class VoiceCommandClient(Client):
             pass
 
     def _process_command(self, parsed_speech):
-        for command in self.COMMANDS:
-            match = re.match(command.regex, parsed_speech.replace(" please", "").replace("please ", ""))
-            if match:
-                item = match.group(command.item_group).strip()
-                action = match.group(command.action_group)
-                return_data = self.server_connection.update_field(item, action)
-                if return_data[Constants.JSON_STATUS] == Constants.JSON_STATUS_OK:
-                    self._speak("OK")
-                    # print("OK")
-                elif return_data[Constants.JSON_STATUS] == Constants.JSON_STATUS_FAIL:
-                    self._speak("I'm sorry, I don't know about", item.replace("my", "your"))
-                    # print("I'm sorry, I don't know about %s" % item.replace("my", "your"))
+        for command in self.commands:
+            if command.consume(parsed_speech):
                 return
         self._speak("I'm sorry, I don't know how to help with that")
         # print("I'm sorry, I don't know how to help with that")
@@ -153,7 +138,7 @@ class VoiceCommandClient(Client):
         if text in self.speech_filenames.keys():
             return self.speech_filenames[text]
         else:
-            filename = re.subn("([^a-zA-Z ]+)", "", text)[0].replace(" ", "_").lower() + ".wav"
+            filename = self.SOUNDS_FOLDER + re.subn("([^a-zA-Z ]+)", "", text)[0].replace(" ", "_").lower() + ".wav"
             self.speech_filenames[text] = filename
             return filename
 
