@@ -13,10 +13,13 @@
   - eg "Living Room Lights" = ["Light1", "Light2", "Light3"]
   - This would allow for voice commands to allow for individual lights to be switched or all at once
 - Add mechanism for registered fields to specify how protected the write access is
+- Refactor voice command regexes to include a callback
+  - This would potentially simplify regex loops
 - Add other functions to voice assistant
-  - Simple listening sounds
+  - [Done] Simple listening sounds
   - Snowboy on raspberry pi
-  - Timers
+  - [Done] Timers
+  - Alarms
   - Spotify via pyspotify & libspotify
   
 ## Client ideas:

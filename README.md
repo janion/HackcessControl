@@ -8,3 +8,10 @@ button on an ESP8266 microcontroller running MicroPython.
 
 Plans are to create a client with hotword detection via [Snowboy](https://github.com/Kitt-AI/snowboy)
 and speech recognition via [SpeechRecognition](https://github.com/Uberi/speech_recognition) using Google speech API.
+
+####Dependencies:
+- word2number
+- pygame
+- SpeechRecognition
+- google-cloud-texttospeech
+- snowboy [not added yet]
