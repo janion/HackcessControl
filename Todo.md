@@ -15,10 +15,12 @@
 - Add mechanism for registered fields to specify how protected the write access is
 - Refactor voice command regexes to include a callback
   - This would potentially simplify regex loops
+- Factor out sound player so that other functions can use it
+  - eg. timer alarms
 - Add other functions to voice assistant
   - [Done] Simple listening sounds
   - Snowboy on raspberry pi
-  - [Done] Timers
+  - [Partially Done] Timers
   - Alarms
   - Spotify via pyspotify & libspotify
   

@@ -15,3 +15,4 @@ and speech recognition via [SpeechRecognition](https://github.com/Uberi/speech_r
 - SpeechRecognition
 - google-cloud-texttospeech
 - snowboy [not added yet]
+  - PyAudio

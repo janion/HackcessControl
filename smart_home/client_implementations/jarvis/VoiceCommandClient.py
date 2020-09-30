@@ -10,6 +10,8 @@ from google.cloud import texttospeech as tts
 from google.oauth2 import service_account
 from pygame import mixer
 
+from snowboy.hotword_detection import HotwordDetector
+
 from smart_home.client.Client import Client
 from smart_home.client_implementations.jarvis.commands.SwitchOnCommand import SwitchOnItemCommand
 from smart_home.client_implementations.jarvis.commands.TimerCommand import TimerCommand
@@ -20,6 +22,7 @@ class VoiceCommandClient(Client):
 
     BACKGROUND_ADJUSTMENT_PERIOD = 20
 
+    MODEL_FILE = "jarvis.umdl"
     CREDENTIALS_FILE = "jarvis-74f83c8acc1f.json"
     SOUNDS_FOLDER = "sounds/"
     WAKE_TONE_FILE = SOUNDS_FOLDER + "WAKE_TONE.wav"
@@ -33,6 +36,8 @@ class VoiceCommandClient(Client):
         self.speaker_lock = RLock()
         with open(self.CREDENTIALS_FILE) as json_file:
             self.credentials_json = json_file.read()
+
+        self.hotword_detector = HotwordDetector(self.MODEL_FILE)
 
         self.voice_params = tts.VoiceSelectionParams(language_code="en-GB", name="en-GB-Wavenet-B")
         self.audio_config = tts.AudioConfig(audio_encoding=tts.AudioEncoding.LINEAR16)
@@ -48,12 +53,10 @@ class VoiceCommandClient(Client):
         self.commands.append(TimerCommand(self._speak, self.server_connection))
         self.commands.append(CancelCommand(self._speak, self.server_connection))
 
-        # Start snowboy
-        pass
-
     def process(self, server_connection):
         # Snowboy await hotword
-        self._listen()
+        # This blocks the main thread
+        self.hotword_detector.start(self.listen)
 
     def _listen(self):
         try:
