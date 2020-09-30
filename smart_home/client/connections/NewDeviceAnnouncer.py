@@ -57,7 +57,7 @@ class NewDeviceAnnouncer:
 
     def _get_ip_address(self):
         if sys.implementation.name == "cpython":
-            return gethostbyname(gethostname())
+            return gethostbyname(gethostname() + ".local")
         elif sys.implementation.name == "micropython":
             return network.WLAN(network.STA_IF).ifconfig()[0]
 

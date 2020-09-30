@@ -22,9 +22,10 @@ class VoiceCommandClient(Client):
 
     BACKGROUND_ADJUSTMENT_PERIOD = 20
 
-    MODEL_FILE = "jarvis.umdl"
-    CREDENTIALS_FILE = "jarvis-74f83c8acc1f.json"
-    SOUNDS_FOLDER = "sounds/"
+    RESOURCES_FOLDER = "resources/"
+    MODEL_FILE = RESOURCES_FOLDER + "jarvis.umdl"
+    CREDENTIALS_FILE = RESOURCES_FOLDER + "Jarvis-74f83c8acc1f.json"
+    SOUNDS_FOLDER = RESOURCES_FOLDER + "sounds/"
     WAKE_TONE_FILE = SOUNDS_FOLDER + "WAKE_TONE.wav"
     SLEEP_TONE_FILE = SOUNDS_FOLDER + "SLEEP_TONE.wav"
 
@@ -56,10 +57,11 @@ class VoiceCommandClient(Client):
     def process(self, server_connection):
         # Snowboy await hotword
         # This blocks the main thread
-        self.hotword_detector.start(self.listen)
+        self.hotword_detector.start(self._listen)
 
     def _listen(self):
         try:
+            self.hotword_detector.stop()
             self.recogniser_lock.acquire()
             with self.mic as source:
                 self.recogniser.adjust_for_ambient_noise(source)

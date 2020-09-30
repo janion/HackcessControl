@@ -14,5 +14,7 @@ and speech recognition via [SpeechRecognition](https://github.com/Uberi/speech_r
 - pygame
 - SpeechRecognition
 - google-cloud-texttospeech
+  - google-api-python client
+  - oauth2client
 - snowboy [not added yet]
   - PyAudio

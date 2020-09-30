@@ -3,7 +3,7 @@ import time
 
 import smart_home.common.Constants as Constants
 from smart_home.client.Client import Client
-from smart_home.client_implementations.example import FIELD_NAME
+from smart_home.client_implementations.example.esp8266.button.PushButtonUpdatingClient import FIELD_NAME
 
 
 class PushButtonPollingClient(Client):

@@ -9,7 +9,7 @@ class HotwordDetector:
         # capture SIGINT signal, e.g., Ctrl+C
         signal.signal(signal.SIGINT, self.signal_handler)
 
-        self.detector = snowboydecoder.HotwordDetector(model, sensitivity=0.5)
+        self.detector = snowboydecoder.HotwordDetector(model, sensitivity=[0.8, 0.8], audio_gain=1.5)
 
     def start(self, callback):
         self.detector.start(detected_callback=callback, interrupt_check=self.interrupt_callback, sleep_time=0.03)
