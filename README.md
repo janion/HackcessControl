@@ -9,6 +9,11 @@ button on an ESP8266 microcontroller running MicroPython.
 Plans are to create a client with hotword detection via [Snowboy](https://github.com/Kitt-AI/snowboy)
 and speech recognition via [SpeechRecognition](https://github.com/Uberi/speech_recognition) using Google speech API.
 
+To run, navigate to the *SmartHome* directory and run the follwoing command:
+```
+python3 -m smart_home.client_implementations.jarvis.VoiceCommandClient
+```
+
 ####Dependencies:
 - word2number
 - pygame

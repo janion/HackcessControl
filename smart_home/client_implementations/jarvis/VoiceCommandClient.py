@@ -22,7 +22,7 @@ class VoiceCommandClient(Client):
 
     BACKGROUND_ADJUSTMENT_PERIOD = 20
 
-    RESOURCES_FOLDER = "resources/"
+    RESOURCES_FOLDER = "smart_home/resources/"
     MODEL_FILE = RESOURCES_FOLDER + "jarvis.umdl"
     CREDENTIALS_FILE = RESOURCES_FOLDER + "Jarvis-74f83c8acc1f.json"
     SOUNDS_FOLDER = RESOURCES_FOLDER + "sounds/"
@@ -58,6 +58,8 @@ class VoiceCommandClient(Client):
         # Snowboy await hotword
         # This blocks the main thread
         self.hotword_detector.start(self._listen)
+        if self.hotword_detector.interrupted:
+            exit()
 
     def _listen(self):
         try:
@@ -89,6 +91,7 @@ class VoiceCommandClient(Client):
         for command in self.commands:
             if command.consume(parsed_speech):
                 return
+        print(parsed_speech)
         self._speak("I'm sorry, I don't know how to help with that")
         # print("I'm sorry, I don't know how to help with that")
 
