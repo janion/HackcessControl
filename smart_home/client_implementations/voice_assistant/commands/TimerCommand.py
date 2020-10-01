@@ -3,7 +3,7 @@ from word2number.w2n import word_to_num
 from threading import Thread
 from time import time, sleep
 
-from smart_home.client_implementations.jarvis.commands.Command import Command
+from smart_home.client_implementations.voice_assistant.commands.Command import Command
 
 
 class TimerThread(Thread):

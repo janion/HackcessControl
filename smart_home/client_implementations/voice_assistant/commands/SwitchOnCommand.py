@@ -1,7 +1,7 @@
 import re
 
 import smart_home.common.Constants as Constants
-from smart_home.client_implementations.jarvis.commands.Command import Command
+from smart_home.client_implementations.voice_assistant.commands.Command import Command
 
 
 class CommandRegex:

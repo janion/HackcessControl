@@ -10,12 +10,15 @@ from google.cloud import texttospeech as tts
 from google.oauth2 import service_account
 from pygame import mixer
 
-from snowboy.hotword_detection import HotwordDetector
+try:
+    from snowboy.hotword_detection import HotwordDetector
+except ImportError:
+    pass
 
 from smart_home.client.Client import Client
-from smart_home.client_implementations.jarvis.commands.SwitchOnCommand import SwitchOnItemCommand
-from smart_home.client_implementations.jarvis.commands.TimerCommand import TimerCommand
-from smart_home.client_implementations.jarvis.commands.CancelCommand import CancelCommand
+from smart_home.client_implementations.voice_assistant.commands.SwitchOnCommand import SwitchOnItemCommand
+from smart_home.client_implementations.voice_assistant.commands.TimerCommand import TimerCommand
+from smart_home.client_implementations.voice_assistant.commands.CancelCommand import CancelCommand
 
 
 class VoiceCommandClient(Client):
@@ -38,7 +41,11 @@ class VoiceCommandClient(Client):
         with open(self.CREDENTIALS_FILE) as json_file:
             self.credentials_json = json_file.read()
 
-        self.hotword_detector = HotwordDetector(self.MODEL_FILE)
+        try:
+            self.hotword_detector = HotwordDetector(self.MODEL_FILE)
+        except NameError:
+            print("Snowboy hotwork detectory not available")
+            pass
 
         self.voice_params = tts.VoiceSelectionParams(language_code="en-GB", name="en-GB-Wavenet-B")
         self.audio_config = tts.AudioConfig(audio_encoding=tts.AudioEncoding.LINEAR16)
@@ -57,13 +64,23 @@ class VoiceCommandClient(Client):
     def process(self, server_connection):
         # Snowboy await hotword
         # This blocks the main thread
-        self.hotword_detector.start(self._listen)
-        if self.hotword_detector.interrupted:
-            exit()
+        try:
+            self.hotword_detector.start(self._listen)
+            if self.hotword_detector.interrupted:
+                exit()
+        except NameError:
+            # Snowboy not available
+            # No hotword detector to start
+            input()
+            self._listen()
 
     def _listen(self):
         try:
             self.hotword_detector.stop()
+        except NameError:
+            # No hotword detector to stop
+            pass
+        try:
             self.recogniser_lock.acquire()
             with self.mic as source:
                 self.recogniser.adjust_for_ambient_noise(source)

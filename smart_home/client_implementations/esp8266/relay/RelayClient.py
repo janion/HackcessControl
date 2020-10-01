@@ -11,7 +11,8 @@ class RelayClient(Client):
 
     def __init__(self):
         super().__init__("esp8266_relay")
-        self.relay = Pin(5, Pin.IN, Pin.PULL_UP)
+        self.relay = Pin(5, Pin.IOUT)
+        self.relay.value(1)
         self.last_poll_time = 0
 
     def setup_process(self, server_connection):
