@@ -68,17 +68,17 @@ class TimerCommand(Command):
         match = re.match(self.CANCEL_TIMER_REGEX, parsed_speech.replace(" please", "").replace("please ", ""))
         if match:
             if self._stop_timer():
-                self.speak_callback("OK", "cancelling latest timer")
+                self.sound_player.speak("OK", "cancelling latest timer")
             else:
-                self.speak_callback("no timers to cancel")
+                self.sound_player.speak("no timers to cancel")
             return True
 
         match = re.match(self.CANCEL_ALL_TIMERS_REGEX, parsed_speech.replace(" please", "").replace("please ", ""))
         if match:
             if self._stop_all_timers():
-                self.speak_callback("OK", "cancelling all timers")
+                self.sound_player.speak("OK", "cancelling all timers")
             else:
-                self.speak_callback("no timers to cancel")
+                self.sound_player.speak("no timers to cancel")
             return True
 
         return False
@@ -106,7 +106,7 @@ class TimerCommand(Command):
                 and_2 = match.group(command.and_group_2)
                 seconds = match.group(command.seconds_group)
 
-                self.speak_callback("OK", *self._create_responses(action, hours, and_1, minutes, and_2, seconds))
+                self.sound_player.speak("OK", *self._create_responses(action, hours, and_1, minutes, and_2, seconds))
 
                 if hours is not None and hours != "":
                     hours_val = word_to_num(hours)
@@ -123,7 +123,7 @@ class TimerCommand(Command):
                 self._start_timer_thread(hours_val, minutes_val, seconds_val)
 
             except ValueError:
-                self.speak_callback(f"I'm sorry, that's not a timer I can {action}")
+                self.sound_player.speak(f"I'm sorry, that's not a timer I can {action}")
 
     def _start_timer_thread(self, hours, minutes, seconds):
         self.timerThreads.append(TimerThread(hours * 3600 + minutes * 60 + seconds, self.timerThreads.remove))

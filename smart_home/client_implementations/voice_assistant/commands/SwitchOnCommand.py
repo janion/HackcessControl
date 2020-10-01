@@ -32,10 +32,10 @@ class SwitchOnItemCommand(Command):
                 value = match.group(command.value_group)
                 return_data = self.server_connection.update_field(item, value)
                 if return_data[Constants.JSON_STATUS] == Constants.JSON_STATUS_OK:
-                    self.speak_callback("OK", "%sing %s" % (action, value), "%s%s" % (the, item))
+                    self.sound_player.speak("OK", "%sing %s" % (action, value), "%s%s" % (the, item))
                 elif return_data[Constants.JSON_STATUS] == Constants.JSON_STATUS_FAIL:
                     print(parsed_speech)
                     print("I'm sorry, I don't know about %s%s" % (the, item.replace("my", "your")))
-                    self.speak_callback("I'm sorry, I don't know about", "%s%s" % (the, item.replace("my", "your")))
+                    self.sound_player.speak("I'm sorry, I don't know about", "%s%s" % (the, item.replace("my", "your")))
                 return True
         return False
