@@ -68,16 +68,16 @@ class VoiceCommandClient(Client):
             self.hotword_detector.start(self._listen)
             if self.hotword_detector.interrupted:
                 exit()
-        except NameError:
+        except AttributeError:
             # Snowboy not available
             # No hotword detector to start
-            input()
+            input("Hit enter to start listening\n")
             self._listen()
 
     def _listen(self):
         try:
             self.hotword_detector.stop()
-        except NameError:
+        except AttributeError:
             # No hotword detector to stop
             pass
         try:

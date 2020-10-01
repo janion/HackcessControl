@@ -62,30 +62,27 @@ class NewDeviceAnnouncer:
             return network.WLAN(network.STA_IF).ifconfig()[0]
 
     def _await_server_response(self, desired_name):
-        try:
-            # Await the server to give its IP address
-            addr = getaddrinfo('0.0.0.0', Constants.SERVER_CONNECTION_PORT_NUMBER)[0][-1]
+        # Await the server to give its IP address
+        addr = getaddrinfo('0.0.0.0', Constants.SERVER_CONNECTION_PORT_NUMBER)[0][-1]
 
-            s = socket()
-            s.settimeout(10)
-            s.bind(addr)
-            s.listen(1)
+        s = socket()
+        s.settimeout(10)
+        s.bind(addr)
+        s.listen(1)
 
-            print('Awaiting server response')
+        print('Awaiting server response')
 
-            cl, connected_addr = s.accept()
-            data = cl.recv(256).decode()
-            cl.close()
+        cl, connected_addr = s.accept()
+        data = cl.recv(256).decode()
+        cl.close()
 
-            json_data = json.loads(data)
-            ip = json_data[Constants.JSON_IP_ADDRESS]
-            assigned_name = json_data[Constants.JSON_CLIENT_NAME]
-            print('Server connected from %s with client name: %s' % (ip, assigned_name))
+        json_data = json.loads(data)
+        ip = json_data[Constants.JSON_IP_ADDRESS]
+        assigned_name = json_data[Constants.JSON_CLIENT_NAME]
+        print('Server connected from %s with client name: %s' % (ip, assigned_name))
 
-            self._write_name_file(desired_name, assigned_name)
-            return ip, assigned_name
-        except:
-            pass
+        self._write_name_file(desired_name, assigned_name)
+        return ip, assigned_name
 
     def _write_name_file(self, desired_name, assigned_name):
         if Constants.DEVICE_NAME_FILE in os.listdir():

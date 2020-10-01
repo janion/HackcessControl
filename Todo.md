@@ -19,7 +19,7 @@
   - eg. timer alarms
 - Add other functions to voice assistant
   - [Done] Simple listening sounds
-  - Snowboy on raspberry pi
+  - [Done] Snowboy on raspberry pi
   - [Partially Done] Timers
   - Alarms
   - Spotify via pyspotify & libspotify
