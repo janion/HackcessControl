@@ -11,6 +11,7 @@
 - Add status LEDs to inform user of power enabled and/or permission added
 - Add mechanism to set user as admin
 - Add mechanism to remove user as admin
+- Hook up RFID library
 
 ## Done:
 - Clients declare to server name
