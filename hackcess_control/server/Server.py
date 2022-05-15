@@ -11,11 +11,11 @@ class Server:
 
     def __init__(self):
         self.database = Database();
-        self.database.add_field(Constants.JSON_TIME, Constants.SERVER_ONLY_IP, time.strftime("%H:%M:%S"))
+        self.database.add_user_permission(Constants.JSON_TIME, Constants.SERVER_ONLY_IP, time.strftime("%H:%M:%S"))
 
     def start(self):
         client_list = ClientList()
-        client_list.add_client_added_callback(lambda client_id: print("Callback for IP %s (%s)" % (client_id.get_ip(), client_id.get_name())))
+        client_list.add_client_added_callback(lambda client_id: print("Callback for IP %s (%s)" % (client_id.get_ip(), client_id.get_id())))
         replier = NewDeviceReplier(client_list)
         replier.start()
         interface = Interface(client_list, self.database)

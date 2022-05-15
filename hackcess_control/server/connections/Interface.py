@@ -22,59 +22,41 @@ class Interface:
         self.thread.start()
 
     def _on_new_client(self, clientsocket, addr):
-        name = None
+        client_name = None
         try:
             while True:
                 data = clientsocket.recv(1024).decode()
                 if data is not "":
                     # print(data)
                     json_data = json.loads(data)
-                    if json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSPECT:
-                        name = json_data[Constants.JSON_CLIENT_NAME]
-                        all_fields = self.database.get_field_names()
-                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA,
-                                       Constants.JSON_ALL_FIELDS: all_fields}
-                        clientsocket.send(json.dumps(return_data).encode())
+                    return_data = []
 
-                    elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_POLL:
-                        name = json_data[Constants.JSON_CLIENT_NAME]
-                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_DATA}
+                    if json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_POLL:
+                        client_name = json_data[Constants.JSON_CLIENT_NAME]
+                        user_id = json_data[Constants.JSON_USER_ID]
 
-                        data_type = json_data[Constants.JSON_DATA_TYPE]
-                        for each_data_type in data_type:
-                            field_update = self.database.get_field_value(each_data_type)
-                            field_update_data = {}
-                            if field_update is not None:
-                                field_update_data[Constants.JSON_VALUE] = field_update.get_value()
-                                field_update_data[Constants.JSON_UPDATE_TIMESTAMP] = field_update.get_time()
-                            else:
-                                field_update_data[Constants.JSON_VALUE] = Constants.NO_DATA
+                        is_permitted = self.database.get_user_permission(user_id, client_name)
 
-                            return_data[each_data_type] = field_update_data
-                        clientsocket.send(json.dumps(return_data).encode())
+                        return_data[Constants.JSON_MESSAGE_TYPE] = Constants.JSON_MESSAGE_TYPE_DATA
+                        return_data[Constants.JSON_CLIENT_NAME] = client_name
+                        return_data[Constants.JSON_USER_ID] = user_id
+                        return_data[Constants.JSON_USER_PERMISSION] = Constants.JSON_ACCESS_GRANTED if is_permitted else Constants.JSON_ACCESS_DENIED
 
-                    elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSTALL:
-                        name = json_data[Constants.JSON_CLIENT_NAME]
-                        data_type = json_data[Constants.JSON_DATA_TYPE]
-                        value = json_data[Constants.JSON_VALUE]
-                        set_ok = self.database.add_field(data_type, addr[0], value)
-                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_INSTALL_STATUS,
-                                       Constants.JSON_STATUS: Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL}
-                        clientsocket.send(json.dumps(return_data).encode())
+                    elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSTALL_USER:
+                        client_name = json_data[Constants.JSON_CLIENT_NAME]
+                        user_id = json_data[Constants.JSON_USER_ID]
+                        set_ok = self.database.add_user_permission(user_id, client_name)
 
-                    elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_UPDATE:
-                        name = json_data[Constants.JSON_CLIENT_NAME]
-                        data_type = json_data[Constants.JSON_DATA_TYPE]
-                        value = json_data[Constants.JSON_VALUE]
-                        set_ok = self.database.set_field_value(data_type, value, addr[0])
-                        return_data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_UPDATE_STATUS,
-                                       Constants.JSON_STATUS: Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL}
-                        clientsocket.send(json.dumps(return_data).encode())
+                        return_data[Constants.JSON_MESSAGE_TYPE] = Constants.JSON_MESSAGE_TYPE_INSTALL_STATUS
+                        return_data[Constants.JSON_STATUS] = Constants.JSON_STATUS_OK if set_ok else Constants.JSON_STATUS_FAIL
+
+                    clientsocket.send(json.dumps(return_data).encode())
+
                 sleep(1)
         except Exception as exptn:
             print("Exception:", exptn)
-            if name is not None:
-                self.client_list.remove_client(name, addr[0])
+            if client_name is not None:
+                self.client_list.remove_client(client_name, addr[0])
         finally:
             clientsocket.close()
 

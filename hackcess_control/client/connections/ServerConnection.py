@@ -18,7 +18,7 @@ class ServerConnection:
         return self._send_to_server(Constants.JSON_MESSAGE_TYPE_POLL, list(data_type))
 
     def install_field(self, data_type, value):
-        return self._send_to_server(Constants.JSON_MESSAGE_TYPE_INSTALL, data_type, value)
+        return self._send_to_server(Constants.JSON_MESSAGE_TYPE_INSTALL_USER, data_type, value)
     
     def update_field(self, data_type, value):
         return self._send_to_server(Constants.JSON_MESSAGE_TYPE_UPDATE, data_type, value)

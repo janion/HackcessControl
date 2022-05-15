@@ -50,7 +50,7 @@ class NewDeviceAnnouncer:
         cs.close()
 
     def _create_json(self, name):
-        data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_ANNOUNCE,
+        data = {Constants.JSON_MESSAGE_TYPE: Constants.JSON_MESSAGE_TYPE_ANNOUNCE_CLIENT,
                 Constants.JSON_IP_ADDRESS: self._get_ip_address(),
                 Constants.JSON_CLIENT_NAME: name}
         return json.dumps(data)

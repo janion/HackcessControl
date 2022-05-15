@@ -1,58 +1,34 @@
 from threading import RLock
 
-from hackcess_control.server.data.DataUpdate import DataUpdate
-from hackcess_control.server.data.DataField import DataField
-import hackcess_control.common.Constants as Constants
+from hackcess_control.server.data.User import User
 
 
 class Database:
 
     def __init__(self):
-        self.data = {}
+        self.users = {}
         self.lock = RLock()
 
-    def add_field(self, field_name, permitted_ip=Constants.ANY_IP, initial_value=0):
+    def add_user_permission(self, user_id, permitted_client_name):
         self.lock.acquire()
 
-        if self._get_field(field_name) is not None:
-            self.lock.release()
-            return False
+        user = self.users[user_id]
+        if user is None:
+            user = User(user_id)
+            self.users[user_id] = user
 
-        field = DataField(field_name, permitted_ip)
-        self.data[field] = DataUpdate(initial_value)
+        user.add_permitted_client(permitted_client_name)
 
         self.lock.release()
         return True
 
-    def set_field_value(self, field_name, value, ip):
+    def get_user_permission(self, user_id, client_name):
         self.lock.acquire()
 
-        field = self._get_field(field_name)
-        if field is None or not field.has_permission(ip):
+        user = self.users[user_id]
+        if user is not None:
             self.lock.release()
-            return False
-
-        self.data[field] = DataUpdate(value)
-
-        self.lock.release()
-        return True
-
-    def get_field_value(self, field_name):
-        self.lock.acquire()
-
-        field = self._get_field(field_name)
-        if field is not None:
-            self.lock.release()
-            return self.data[field]
+            return client_name in user.get_permited_clients()
         else:
             self.lock.release()
-            return None
-
-    def get_field_names(self):
-        return [key.get_name() for key in self.data.keys()]
-
-    def _get_field(self, name):
-        for field in self.data.keys():
-            if field.get_name() == name:
-                return field
-        return None
+            return False

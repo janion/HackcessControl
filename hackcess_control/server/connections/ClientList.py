@@ -36,9 +36,9 @@ class ClientList:
 
     def _get_client_id(self, name=None, ip=None):
         for client in self.client_ids:
-            if name is not None and ip is not None and client.get_name() == name and client.get_ip() == ip:
+            if name is not None and ip is not None and client.get_id() == name and client.get_ip() == ip:
                 return client
-            elif name is not None and ip is None and client.get_name() == name:
+            elif name is not None and ip is None and client.get_id() == name:
                 return client
             elif ip is not None and name is None and client.get_ip() == ip:
                 return client
