@@ -1,25 +1,8 @@
-# Smart Home [Working Title]
-This is an experimental project to create a central "database" polling architecture for smart home related applications.
-The premise is simple: create a "database" server which allows clients to add data fields, set their value and poll their value.
+# Hackcess Control
+A simple framework to allow for dangerous tools to be protected in a way that allows for members to enable power to the tools via their RFID door entry tags running on an ESP8266 microcontroller.
 
-An abstract client is provided, but implementations are not limited in their function.
-Initial example implementations show updating and polling the epoch time, and updating and polling the state of a
-button on an ESP8266 microcontroller running MicroPython.
+An abstract client is provided, but the main implementations is a simple RFID read, server lookup and relay switch.
 
-Plans are to create a client with hotword detection via [Snowboy](https://github.com/Kitt-AI/snowboy)
-and speech recognition via [SpeechRecognition](https://github.com/Uberi/speech_recognition) using Google speech API.
+---
 
-To run, navigate to the *SmartHome* directory and run the follwoing command:
-```
-python3 -m smart_home.client_implementations.jarvis.VoiceCommandClient
-```
-
-####Dependencies:
-- word2number
-- pygame
-- SpeechRecognition
-- google-cloud-texttospeech
-  - google-api-python client
-  - oauth2client
-- snowboy [not added yet]
-  - PyAudio
+Note that this is not complete and is based off my [SmartHome repo](github.com/janion/SmartHome).
