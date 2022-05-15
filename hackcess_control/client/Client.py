@@ -6,11 +6,10 @@ class Client:
 
     DEFAULT_CLIENT_NAME = "CLIENT_DEVICE"
 
-    def __init__(self, name=DEFAULT_CLIENT_NAME, fields=[]):
+    def __init__(self, name=DEFAULT_CLIENT_NAME):
         self.name = name
         self.server_ip = "Not yet connected"
         self.announcer = NewDeviceAnnouncer()
-        self.fields = fields
         self.server_connection = None
 
     def start(self):
@@ -27,8 +26,6 @@ class Client:
         self.server_ip, self.name = self.announcer.connect_to_server(self.name)
         if self.server_connection is None:
             self.server_connection = ServerConnection(self.server_ip, self.name)
-        for field in self.fields:
-            self.server_connection.install_field(field[0], field[1])
 
     def setup_process(self, server_connection):
         pass

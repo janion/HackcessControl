@@ -1,4 +1,4 @@
-from hackcess_control.client.tool_client import PushButtonUpdatingClient
+from hackcess_control.client.tool_client import RfidToolClient
 
-client = PushButtonUpdatingClient()
+client = RfidToolClient()
 client.start()

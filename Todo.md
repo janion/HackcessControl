@@ -4,6 +4,13 @@
 - Add mechanism for arbitrary connection to poll the total database state? (debugging only)
 - Server to record tool usage
 - Client/server to calculate _actual_ tool usage by a current meter
+- Change internal & json references from "client" to "tool"
+- Change server database to save permissions in json file which lists each user
+- Add new user permissions by scanning an admin tag while the new user is already present
+- Remove user by scanning an admin tag while the new user is already present
+- Add status LEDs to inform user of power enabled and/or permission added
+- Add mechanism to set user as admin
+- Add mechanism to remove user as admin
 
 ## Done:
 - Clients declare to server name

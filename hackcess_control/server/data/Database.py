@@ -32,3 +32,14 @@ class Database:
         else:
             self.lock.release()
             return False
+
+    def get_user_admin_status(self, user_id):
+        self.lock.acquire()
+
+        user = self.users[user_id]
+        if user is not None:
+            self.lock.release()
+            return user.is_admin()
+        else:
+            self.lock.release()
+            return False

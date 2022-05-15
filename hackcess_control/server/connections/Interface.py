@@ -36,11 +36,13 @@ class Interface:
                         user_id = json_data[Constants.JSON_USER_ID]
 
                         is_permitted = self.database.get_user_permission(user_id, client_name)
+                        is_admin = self.database.get_user_admin_status(user_id)
 
                         return_data[Constants.JSON_MESSAGE_TYPE] = Constants.JSON_MESSAGE_TYPE_DATA
                         return_data[Constants.JSON_CLIENT_NAME] = client_name
                         return_data[Constants.JSON_USER_ID] = user_id
                         return_data[Constants.JSON_USER_PERMISSION] = Constants.JSON_ACCESS_GRANTED if is_permitted else Constants.JSON_ACCESS_DENIED
+                        return_data[Constants.JSON_USER_ADMIN_STATUS] = Constants.JSON_USER_ADMIN if is_admin else Constants.JSON_USER
 
                     elif json_data[Constants.JSON_MESSAGE_TYPE] == Constants.JSON_MESSAGE_TYPE_INSTALL_USER:
                         client_name = json_data[Constants.JSON_CLIENT_NAME]
